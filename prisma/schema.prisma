@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String   @unique
+
+  name      String?
+  email     String?
+
+  polls     Poll[]
+
+  createdAt DateTime @default(now())
+}
+
+model Poll {
+  id          String   @id @default(cuid())
+
+  title       String
+  description String?
+
+  isClosed    Boolean @default(false)
+
+  authorId    String
+  author      User @relation(fields: [authorId], references: [id])
+
+  questions   PollQuestion[]
+
+  comments    Comment[]
+
+  createdAt   DateTime @default(now())
+}
+
+model PollQuestion {
+  id        String @id @default(cuid())
+
+  title     String
+
+  pollId    String
+  poll      Poll @relation(fields: [pollId], references: [id], onDelete: Cascade)
+
+  options   PollOption[]
+}
+
+model PollOption {
+  id          String @id @default(cuid())
+
+  text        String
+
+  questionId  String
+  question    PollQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  votes       Vote[]
+}
+
+model Vote {
+  id          String @id @default(cuid())
+
+  voterId     String
+
+  optionId    String
+  option      PollOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now())
+
+  @@unique([voterId, optionId])
+}
+
+model Comment {
+  id          String @id @default(cuid())
+
+  text        String
+
+  author      String
+
+  pollId      String
+  poll        Poll @relation(fields: [pollId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now())
+}
