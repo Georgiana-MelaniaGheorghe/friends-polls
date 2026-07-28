@@ -15,7 +15,7 @@ pnpm dev
 bun dev
 ```
 
-Open https://friends-polls.vercel.app/ with your browser to see the result.
+Open https://friends-polls.vercel.app with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
