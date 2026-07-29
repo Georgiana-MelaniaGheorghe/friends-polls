@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import VoteButton from "@/components/poll/VoteButton";
 import CommentForm from "@/components/poll/CommentForm";
@@ -12,6 +13,7 @@ type Props = {
 
 export default async function PollPage({ params }: Props) {
   const { id } = await params;
+  const { userId } = await auth();
 
   const poll = await prisma.poll.findUnique({
     where: {
@@ -32,12 +34,15 @@ export default async function PollPage({ params }: Props) {
       createdAt: "desc",
     },
   },
+  author: true,
 },
   });
 
   if (!poll) {
     notFound();
   }
+
+  const isOwner = userId === poll.author.clerkId;
 
   const isExpired = poll.expiresAt ? new Date() > new Date(poll.expiresAt) : false;
   const canVote = !poll.isClosed && !isExpired;
@@ -53,7 +58,7 @@ export default async function PollPage({ params }: Props) {
     <main className="mx-auto max-w-4xl px-6 py-10">
       <div className="flex items-start justify-between gap-4">
         <h1 className="text-4xl font-bold">{poll.title}</h1>
-        <CopyLinkButton pollId={poll.id} />
+        {isOwner && <CopyLinkButton pollId={poll.id} />}
       </div>
 
       {poll.description && (
@@ -181,6 +186,5 @@ export default async function PollPage({ params }: Props) {
   </div>
 </section>
     </main>
-    
   );
 }
