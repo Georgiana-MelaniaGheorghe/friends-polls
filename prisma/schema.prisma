@@ -27,6 +27,14 @@ model Poll {
 
   isClosed    Boolean @default(false)
 
+  public      Boolean @default(true)
+
+  allowComments Boolean @default(true)
+
+  showResultsImmediately Boolean @default(true)
+
+  expiresAt   DateTime?
+
   authorId    String
   author      User @relation(fields: [authorId], references: [id])
 
@@ -46,6 +54,8 @@ model PollQuestion {
   poll      Poll @relation(fields: [pollId], references: [id], onDelete: Cascade)
 
   options   PollOption[]
+
+  
 }
 
 model PollOption {
@@ -60,14 +70,14 @@ model PollOption {
 }
 
 model Vote {
-  id          String @id @default(cuid())
+  id        String @id @default(cuid())
 
-  voterId     String
+  voterId   String
 
-  optionId    String
-  option      PollOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  optionId  String
+  option    PollOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
 
-  createdAt   DateTime @default(now())
+  createdAt DateTime @default(now())
 
   @@unique([voterId, optionId])
 }
