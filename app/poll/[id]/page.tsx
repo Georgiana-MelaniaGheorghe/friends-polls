@@ -181,5 +181,6 @@ export default async function PollPage({ params }: Props) {
   </div>
 </section>
     </main>
+    
   );
 }
