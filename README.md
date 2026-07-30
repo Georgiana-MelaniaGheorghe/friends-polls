@@ -1,7 +1,7 @@
 
 # 🗳️ Friend Poll
 
-**Ia decizii de grup, rapid, fără bătăi de cap.**
+**O aplicație web pentru crearea și gestionarea sondajelor de grup.**
 
 Friend Poll este o aplicație web pentru grupuri de prieteni care trebuie să
 ia rapid o decizie comună. Creatorul unui sondaj invită participanții prin
@@ -13,7 +13,7 @@ poate fi închis de creator odată ce decizia a fost luată.
 
 ---
 
-## ✨ Funcționalități (plan)
+## ✨ Funcționalități
 
 - [ ] Autentificare cu Clerk
 - Creare sondaje cu:
@@ -33,15 +33,71 @@ poate fi închis de creator odată ce decizia a fost luată.
 
 ## 🧱 Stack tehnic
 
-| Zonă             | Tehnologie                          |
+| Zonă             | Tehnologie                           |
 |------------------|--------------------------------------|
-| Framework        | [Next.js](https://nextjs.org) 15 (App Router) |
-| Limbaj           | TypeScript                          |
-| Stilizare        | Tailwind CSS                        |
-| Autentificare    |  Clerk                              |
-| Bază de date     |  Supabase                           |
-| Deploy           | Vercel                              |
+| Framework        | Next.js                              |
+| Limbaj           | TypeScript                           |
+| Stilizare/UI     | Tailwind CSS                         |
+| ORM              |   Prisma                             |
+|Autentificare     |  Clerk                               |
+| Bază de date     |  Supabase                            |
+| Deploy           | Vercel                               |
 
 
+## 🚀 Rulare locală
+
+Clonează proiectul:
+
+```bash
+git clone https://github.com/USERNAME/friends-polls.git
+```
+
+Intră în proiect:
+
+```bash
+cd friends-polls
+```
+
+Instalează dependințele:
+
+```bash
+npm install
+```
+
+Configurează fișierul `.env`:
+
+```env
+DATABASE_URL=
+
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+
+CLERK_SECRET_KEY=
+```
+
+Actualizează baza de date:
+
+```bash
+npx prisma db push
+```
+
+Generează Prisma Client:
+
+```bash
+npx prisma generate
+```
+
+Pornește aplicația:
+
+```bash
+npm run dev
+```
+
+Aplicația va fi disponibilă la:
+
+```
+http://localhost:3000
+```
+
+---
 
 
