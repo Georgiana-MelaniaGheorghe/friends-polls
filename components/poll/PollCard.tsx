@@ -14,6 +14,7 @@ type PollCardProps = {
   expiresAt?: Date | null;
   isPublic?: boolean;
   previewOptions?: PreviewOption[];
+  showEditButton?: boolean;
 };
 
 export default function PollCard({
@@ -25,6 +26,7 @@ export default function PollCard({
   expiresAt,
   isPublic,
   previewOptions = [],
+  showEditButton = true,
 }: PollCardProps) {
   const totalVotes = previewOptions.reduce((sum, o) => sum + o.votes, 0);
   const maxVotes = Math.max(0, ...previewOptions.map((o) => o.votes));
@@ -99,12 +101,14 @@ export default function PollCard({
           Vezi
         </Link>
 
-        <Link
-          href={`/poll/${id}/edit`}
-          className="rounded-lg border px-4 py-2 hover:bg-gray-100"
-        >
-          Editează
-        </Link>
+        {showEditButton && (
+          <Link
+            href={`/poll/${id}/edit`}
+            className="rounded-lg border px-4 py-2 hover:bg-gray-100"
+          >
+            Editează
+          </Link>
+        )}
       </div>
     </div>
   );

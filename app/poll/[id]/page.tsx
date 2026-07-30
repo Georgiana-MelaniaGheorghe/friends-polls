@@ -55,11 +55,28 @@ export default async function PollPage({ params }: Props) {
   }
 
   if (!hasAccess) {
+    if (!userId) {
+      return (
+        <main className="mx-auto max-w-2xl px-6 py-20 text-center">
+          <h1 className="text-3xl font-bold">🔒 Sondaj privat</h1>
+          <p className="mt-4 text-gray-600">
+            Acest sondaj este privat. Autentifică-te cu adresa de email cu care ai fost invitat pentru a avea acces.
+          </p>
+          <a
+            href={`/sign-in?redirect_url=/poll/${poll.id}`}
+            className="mt-6 inline-block rounded-lg bg-black px-6 py-3 text-white hover:bg-gray-800"
+          >
+            Autentifică-te
+          </a>
+        </main>
+      );
+    }
+
     return (
       <main className="mx-auto max-w-2xl px-6 py-20 text-center">
         <h1 className="text-3xl font-bold">🔒 Sondaj privat</h1>
         <p className="mt-4 text-gray-600">
-          Nu ai acces la acest sondaj. Cere autorului să te invite folosind adresa ta de email, apoi accesează linkul fiind autentificat cu acel email.
+          Nu ai acces la acest sondaj. Cere autorului să te invite folosind adresa ta exactă de email.
         </p>
       </main>
     );

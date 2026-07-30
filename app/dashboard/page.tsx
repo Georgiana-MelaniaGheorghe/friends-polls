@@ -56,6 +56,50 @@ export default async function DashboardPage() {
     },
   });
 
+  const invitedPolls = user.email
+    ? await prisma.poll.findMany({
+        where: {
+          authorId: { not: user.id },
+          invites: {
+            some: {
+              email: user.email.toLowerCase(),
+            },
+          },
+        },
+
+        include: {
+          _count: {
+            select: { questions: true },
+          },
+          questions: {
+            take: 1,
+            include: {
+              options: {
+                include: {
+                  _count: { select: { votes: true } },
+                },
+              },
+            },
+          },
+        },
+
+        orderBy: {
+          createdAt: "desc",
+        },
+      })
+    : [];
+
+  function buildPreview(poll: (typeof polls)[number]) {
+    const firstQuestion = poll.questions[0];
+
+    return firstQuestion
+      ? firstQuestion.options.map((o) => ({
+          text: o.text,
+          votes: o._count.votes,
+        }))
+      : [];
+  }
+
   return (
     <main className="mx-auto max-w-6xl p-8">
       <div className="mb-10 flex items-center justify-between">
@@ -89,17 +133,34 @@ export default async function DashboardPage() {
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {polls.map((poll) => {
-            const firstQuestion = poll.questions[0];
+          {polls.map((poll) => (
+            <PollCard
+              key={poll.id}
+              id={poll.id}
+              title={poll.title}
+              description={poll.description}
+              questionsCount={poll._count.questions}
+              createdAt={poll.createdAt}
+              expiresAt={poll.expiresAt}
+              isPublic={poll.public}
+              previewOptions={buildPreview(poll)}
+            />
+          ))}
+        </div>
+      )}
 
-            const previewOptions = firstQuestion
-              ? firstQuestion.options.map((o) => ({
-                  text: o.text,
-                  votes: o._count.votes,
-                }))
-              : [];
+      {invitedPolls.length > 0 && (
+        <div className="mt-14">
+          <h2 className="mb-2 text-2xl font-bold">
+            Sondaje la care ai acces
+          </h2>
 
-            return (
+          <p className="mb-6 text-gray-600">
+            Sondaje private la care ai fost invitat/ă.
+          </p>
+
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {invitedPolls.map((poll) => (
               <PollCard
                 key={poll.id}
                 id={poll.id}
@@ -109,10 +170,11 @@ export default async function DashboardPage() {
                 createdAt={poll.createdAt}
                 expiresAt={poll.expiresAt}
                 isPublic={poll.public}
-                previewOptions={previewOptions}
+                previewOptions={buildPreview(poll)}
+                showEditButton={false}
               />
-            );
-          })}
+            ))}
+          </div>
         </div>
       )}
     </main>
