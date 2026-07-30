@@ -42,7 +42,22 @@ model Poll {
 
   comments    Comment[]
 
+  invites     PollInvite[]
+
   createdAt   DateTime @default(now())
+}
+
+model PollInvite {
+  id        String   @id @default(cuid())
+
+  email     String
+
+  pollId    String
+  poll      Poll @relation(fields: [pollId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([pollId, email])
 }
 
 model PollQuestion {
