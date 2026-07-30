@@ -1,13 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { createPoll } from "@/lib/actions/poll";
 
 export default function NewPollPage() {
+  const router = useRouter();
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [expiresAt, setExpiresAt] = useState("");
   const [isPublic, setIsPublic] = useState(true);
+  const [invites, setInvites] = useState<string[]>([]);
+  const [newInviteEmail, setNewInviteEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const [questions, setQuestions] = useState([
     {
@@ -48,6 +54,24 @@ export default function NewPollPage() {
     setQuestions(updated);
   }
 
+  function addInvite() {
+    const email = newInviteEmail.trim().toLowerCase();
+
+    if (!email) return;
+
+    if (invites.includes(email)) {
+      setNewInviteEmail("");
+      return;
+    }
+
+    setInvites([...invites, email]);
+    setNewInviteEmail("");
+  }
+
+  function removeInviteLocal(email: string) {
+    setInvites(invites.filter((e) => e !== email));
+  }
+
   async function handleCreatePoll() {
     if (!title.trim()) {
       alert("Introdu titlul sondajului.");
@@ -55,32 +79,22 @@ export default function NewPollPage() {
     }
 
     try {
+      setSubmitting(true);
+
       const poll = await createPoll({
         title,
         description,
         expiresAt: expiresAt ? new Date(expiresAt).toISOString() : null,
         public: isPublic,
+        invites,
         questions,
       });
 
-      console.log("Sondaj creat:", poll);
-
-      alert("Sondaj creat cu succes!");
-
-      setTitle("");
-      setDescription("");
-      setExpiresAt("");
-      setIsPublic(true);
-
-      setQuestions([
-        {
-          title: "",
-          options: ["", ""],
-        },
-      ]);
+      router.push(`/poll/${poll.id}`);
     } catch (error) {
       console.error(error);
       alert("A apărut o eroare la salvarea sondajului.");
+      setSubmitting(false);
     }
   }
 
@@ -150,6 +164,51 @@ export default function NewPollPage() {
           </div>
         </div>
 
+        {!isPublic && (
+          <div className="rounded-lg border bg-gray-50 p-4">
+            <h3 className="mb-2 text-sm font-medium text-gray-700">
+              Persoane invitate (după email)
+            </h3>
+
+            <div className="flex gap-2">
+              <input
+                type="email"
+                value={newInviteEmail}
+                onChange={(e) => setNewInviteEmail(e.target.value)}
+                placeholder="email@exemplu.com"
+                className="flex-1 rounded-lg border p-2"
+              />
+              <button
+                type="button"
+                onClick={addInvite}
+                className="rounded-lg bg-black px-4 py-2 text-white"
+              >
+                Invită
+              </button>
+            </div>
+
+            {invites.length > 0 && (
+              <ul className="mt-3 space-y-2">
+                {invites.map((email) => (
+                  <li
+                    key={email}
+                    className="flex items-center justify-between rounded-md bg-white border px-3 py-2 text-sm"
+                  >
+                    {email}
+                    <button
+                      type="button"
+                      onClick={() => removeInviteLocal(email)}
+                      className="text-red-600 hover:underline"
+                    >
+                      Elimină
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+
         {questions.map((question, qIndex) => (
           <div
             key={qIndex}
@@ -207,9 +266,10 @@ export default function NewPollPage() {
         <button
           type="button"
           onClick={handleCreatePoll}
-          className="block w-full rounded-lg bg-black py-4 text-lg text-white hover:bg-gray-800"
+          disabled={submitting}
+          className="block w-full rounded-lg bg-black py-4 text-lg text-white hover:bg-gray-800 disabled:opacity-50"
         >
-          Creează sondaj
+          {submitting ? "Se creează..." : "Creează sondaj"}
         </button>
       </div>
     </main>
