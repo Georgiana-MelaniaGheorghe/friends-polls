@@ -15,21 +15,21 @@ poate fi închis de creator odată ce decizia a fost luată.
 
 ## ✨ Funcționalități
 
--  Autentificare cu Clerk
-- Creare sondaje cu:
+- ✅ Autentificare cu Clerk
+- ✅ Creare sondaje cu:
   - titlu
   - descriere
   - mai multe întrebări
   - mai multe opțiuni
-- Sondaje publice
-- Sondaje private cu invitații prin email
-- Data de expirare a sondajelor
-- Un singur vot pentru fiecare întrebare
-- Posibilitatea schimbării votului
-- Comentarii la sondaje
-- Dashboard pentru gestionarea sondajelor
-- Copiere rapidă a link-ului sondajului
-- Interfață responsive
+- ✅ Sondaje publice
+- ✅ Sondaje private cu invitații prin email
+- ✅ Data de expirare a sondajelor
+- ✅ Un singur vot pentru fiecare întrebare
+- ✅ Posibilitatea schimbării votului
+- ✅ Comentarii la sondaje
+- ✅ Dashboard pentru gestionarea sondajelor
+- ✅ Copiere rapidă a link-ului sondajului
+- ✅ Interfață responsive
 
 ## 🧱 Stack tehnic
 
