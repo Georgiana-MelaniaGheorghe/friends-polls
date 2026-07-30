@@ -8,6 +8,7 @@ export async function createPoll(data: {
   description: string;
   expiresAt?: string | null;
   public?: boolean;
+  invites?: string[];
   questions: {
     title: string;
     options: string[];
@@ -76,6 +77,20 @@ export async function createPoll(data: {
       },
     },
   });
+
+  const validEmails = (data.invites ?? [])
+    .map((email) => email.trim().toLowerCase())
+    .filter((email) => email !== "");
+
+  if (validEmails.length > 0) {
+    await prisma.pollInvite.createMany({
+      data: validEmails.map((email) => ({
+        pollId: poll.id,
+        email,
+      })),
+      skipDuplicates: true,
+    });
+  }
 
   return poll;
 }
