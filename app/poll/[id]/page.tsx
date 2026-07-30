@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import VoteButton from "@/components/poll/VoteButton";
 import CommentForm from "@/components/poll/CommentForm";
@@ -35,6 +35,7 @@ export default async function PollPage({ params }: Props) {
     },
   },
   author: true,
+  invites: true,
 },
   });
 
@@ -43,6 +44,26 @@ export default async function PollPage({ params }: Props) {
   }
 
   const isOwner = userId === poll.author.clerkId;
+
+  let hasAccess = poll.public || isOwner;
+
+  if (!hasAccess && userId) {
+    const clerkUser = await currentUser();
+    const userEmail = clerkUser?.primaryEmailAddress?.emailAddress?.toLowerCase();
+
+    hasAccess = poll.invites.some((invite) => invite.email === userEmail);
+  }
+
+  if (!hasAccess) {
+    return (
+      <main className="mx-auto max-w-2xl px-6 py-20 text-center">
+        <h1 className="text-3xl font-bold">🔒 Sondaj privat</h1>
+        <p className="mt-4 text-gray-600">
+          Nu ai acces la acest sondaj. Cere autorului să te invite folosind adresa ta de email, apoi accesează linkul fiind autentificat cu acel email.
+        </p>
+      </main>
+    );
+  }
 
   const isExpired = poll.expiresAt ? new Date() > new Date(poll.expiresAt) : false;
   const canVote = !poll.isClosed && !isExpired;

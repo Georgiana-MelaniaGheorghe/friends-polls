@@ -1,5 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 import { prisma } from "@/lib/prisma";
 import PollCard from "@/components/poll/PollCard";
@@ -35,7 +36,19 @@ export default async function DashboardPage() {
     },
 
     include: {
-      questions: true,
+      _count: {
+        select: { questions: true },
+      },
+      questions: {
+        take: 1,
+        include: {
+          options: {
+            include: {
+              _count: { select: { votes: true } },
+            },
+          },
+        },
+      },
     },
 
     orderBy: {
@@ -56,12 +69,12 @@ export default async function DashboardPage() {
           </p>
         </div>
 
-        <a
+        <Link
           href="/poll/new"
           className="rounded-lg bg-black px-5 py-3 text-white hover:bg-gray-800"
         >
           + Creează sondaj
-        </a>
+        </Link>
       </div>
 
       {polls.length === 0 ? (
@@ -76,16 +89,30 @@ export default async function DashboardPage() {
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {polls.map((poll) => (
-            <PollCard
-              key={poll.id}
-              id={poll.id}
-              title={poll.title}
-              description={poll.description}
-              questionsCount={poll.questions.length}
-              createdAt={poll.createdAt}
-            />
-          ))}
+          {polls.map((poll) => {
+            const firstQuestion = poll.questions[0];
+
+            const previewOptions = firstQuestion
+              ? firstQuestion.options.map((o) => ({
+                  text: o.text,
+                  votes: o._count.votes,
+                }))
+              : [];
+
+            return (
+              <PollCard
+                key={poll.id}
+                id={poll.id}
+                title={poll.title}
+                description={poll.description}
+                questionsCount={poll._count.questions}
+                createdAt={poll.createdAt}
+                expiresAt={poll.expiresAt}
+                isPublic={poll.public}
+                previewOptions={previewOptions}
+              />
+            );
+          })}
         </div>
       )}
     </main>
