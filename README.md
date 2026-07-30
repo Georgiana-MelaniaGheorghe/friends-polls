@@ -100,25 +100,6 @@ http://localhost:3000
 
 ---
 
-## 📸 Capturi de ecran
-
-### Home
-
-<img width="795" height="780" alt="image" src="https://github.com/user-attachments/assets/8d9f4c43-ec18-4355-8b97-80a8374c45ca" />
-
-
-### Dashboard
-
-<img width="848" height="700" alt="image" src="https://github.com/user-attachments/assets/92871c85-a0ab-48ab-bd2a-241b647f4cc3" />
-
-
-### Create Poll
-
-<img width="815" height="765" alt="image" src="https://github.com/user-attachments/assets/54d5e1d4-586d-4fbc-b6d6-0cf305932dda" />
-
-
----
-
 ## 👩‍💻 Autor
 
 **Georgiana-Melania Gheorghe **
