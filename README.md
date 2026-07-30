@@ -9,7 +9,7 @@ email sau printr-un link, fiecare votează o singură dată și poate lăsa un
 comentariu, iar rezultatele sunt vizibile în timp real pentru toți. Sondajul
 poate fi închis de creator odată ce decizia a fost luată.
 
-**🌐 Live Demo:** https://friends-polls.vercel.app/
+**🌐 Live Demo:** https://friends-polls.vercel.app
 
 ---
 
