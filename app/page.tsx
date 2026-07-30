@@ -1,5 +1,6 @@
 import Link from "next/link";
 import PollCard from "@/components/home/PollCard";
+import { auth } from "@clerk/nextjs/server";
 
 const steps = [
   {
@@ -23,8 +24,9 @@ const steps = [
     text: "Rezultatele se actualizeaza in timp real pana inchizi sondajul.",
   },
 ];
-
+ const { userId } = await auth();
 export default function Home() {
+   
   return (
     <main className="min-h-screen bg-paper text-ink">
       <section className="mx-auto grid max-w-7xl gap-12 px-6 py-20 md:grid-cols-2 md:items-center">
@@ -45,12 +47,12 @@ export default function Home() {
           </p>
 
           <div className="mt-8 flex flex-wrap gap-4">
-            <Link
-              href="/poll/new"
-              className="rounded-full bg-coral px-6 py-3 font-mono text-sm text-white transition hover:opacity-90"
-            >
-              Creeaza un sondaj
-            </Link>
+         <Link
+  href="/sign-in?redirect_url=/poll/new"
+  className="rounded-full bg-coral px-6 py-3 font-mono text-sm text-white transition hover:opacity-90"
+>
+  {userId ? "Creează un sondaj" : "Începe acum"}
+</Link>
 
             {/* <Link
               href="/sign-in"
