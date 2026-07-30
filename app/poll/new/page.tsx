@@ -14,7 +14,6 @@ export default function NewPollPage() {
   const [invites, setInvites] = useState<string[]>([]);
   const [newInviteEmail, setNewInviteEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
-//salut
   const [questions, setQuestions] = useState([
     {
       title: "",
